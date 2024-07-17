@@ -44,7 +44,6 @@ def getCurrencyParams():
     return the list [None, None]
     '''
 
-
 class CreateUserView(CreateView):
     '''
     Finalize this class. It should create a new user.
@@ -142,16 +141,57 @@ class CurrencyExchangeView(LoginRequiredMixin, View):
     empty_context = {'currency_choices': [], 'amount': None, 'currency': None, 'exchanged_amount': None}
 
     def get(self, request):
-        _, currency_choices = getCurrencyParams()
+        # Fetch currency_choices from utility function # _, ** is used to unpack tuples/ 
+        _, currency_choices = getCurrencyParams() 
+        
+        context = {
+            **self.empty_context, # Include all values from empty_context
+            "currency_choices": currency_choices, # Add currency_choices from getCurrencyParam function
+            "username": self.request.user.username # Add current username
+        }
+        return render(request, self.template_name, context)
+
         '''
         Generate a context variable with all values from empty_context and the converted values of currency_choices and username
         currency_choices contains the value of the currency_choices variable
         username contains the name of the current user
         '''
-        return render(request, self.template_name, context)
 
     def post(self, request):
         data, currency_choices = getCurrencyParams()
+
+        # Step 1: Retrieve form data
+        amount = request.POST.get('amount')
+        currency = request.POST.get('currency')
+
+        # Step 2: Process and validate form data
+        if amount:
+            try: 
+                amount = float(amount)
+            except ValueError:
+                amount = None
+
+        # Step 3: Handle invalid data
+        if data is None or amount is None:
+            context = self.empty_context
+            context['currency_choices'] = currency_choices
+            context['username'] = self.request.user.username
+            return render(request, self.template_name, context)
+        
+        # Step 4: Calculate exchange rate
+        exchange_rate = data.get(currency)
+        # Step 5: Calculate exchanged amount
+        exchanged_amount = round(amount * exchange_rate, 2)
+
+        # Step 6: Prepare context (uses empty_context as base) and render template
+        context = {'currency_choices': currency_choices,
+                   'amount': amount,
+                   'currency': currency,
+                   'exchanged_amount': exchanged_amount,
+                   'username' : self.request.user.username
+                   }
+        return render(request, self.template_name, context)
+
         '''
             Improve this method:
             1) add the process of forming the variable amount.
