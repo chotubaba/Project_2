@@ -21,7 +21,15 @@ def getBalance(user):
     Then subtract the withdrawal amount from the deposit amount and return the result.
     '''
 def getCurrencyParams():
-    pass # this line can be deleted 
+    url = "https://fake-api.apps.berlintech.ai/api/currency_exchange"
+    response = requests.get(url)
+
+    if response.status_code ==200:
+        data = response.json() # (dictionary of currency rates)
+        currency_choices = [(currency, f"{currency} ({rate})") for currency, rate in data.items()] # (list of formatted strings)
+        return [data, currency_choices] # returns list 'cas of [], else default is tuples
+    else:
+        return[None, None]
     '''
     Write a function that makes a GET request to the following address 
     https://fake-api.apps.berlintech.ai/api/currency_exchange
