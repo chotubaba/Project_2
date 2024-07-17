@@ -83,10 +83,24 @@ class MainMenuView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['username'] = self.request.user.username
         '''
         If the user is authenticated, then add the 'username' key with the value of username to the context.
         '''
         return context
+    
+    #EXCEPTION HANDLING
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            return super().dispatch(request, *args, **kwargs)
+        except Exception as e:
+            # Log the exception
+            print(f"Exception occurred: {e}")
+            # Render a custom error template
+            return render(request, 'app/error.html', {'message': 'An error occurred. Please try again later.'}, status=500)
+
+
 
 class BalanceOperationsView(LoginRequiredMixin, View):
     template_name = 'app/operations.html'
