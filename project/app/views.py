@@ -6,14 +6,17 @@ from django.views.generic import CreateView, TemplateView, View, ListView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.db.models import Sum
+from django.http import HttpResponse
 from .models import History
 from .forms import CreateUserForm
 import requests
+
 
 def logout_view(request):
     logout(request)
     return redirect('login') 
 
+# #----OPERATIONS ------
 def getBalance(user):
    deposits = History.objects.filter(user = user, 
                                      type = 'deposit').aggregate(total_amount = Sum('amount'))['total_amount'] or 0
@@ -27,7 +30,7 @@ def getBalance(user):
     To calculate the balance, calculate the sum of all user's deposits and the sum of all withdrawals.
     Then subtract the withdrawal amount from the deposit amount and return the result.
     '''
-
+# #-----CURRENCY EXCHANGE ----
 def getCurrencyParams():
     url = "https://fake-api.apps.berlintech.ai/api/currency_exchange"
     response = requests.get(url)
@@ -52,6 +55,7 @@ def getCurrencyParams():
     return the list [None, None]
     '''
 
+# #-----AUTHENTICATION ----
 class CreateUserView(CreateView):
     model = User 
     form_class = CreateUserForm
@@ -112,13 +116,19 @@ class MainMenuView(LoginRequiredMixin, TemplateView):
             # Render a custom error template
             return render(request, 'app/error.html', {'message': 'An error occurred. Please try again later.'}, status=500)
 
-
+# #-----OPERATIONS ----
 
 class BalanceOperationsView(LoginRequiredMixin, View):
     template_name = 'app/operations.html'
     
     def get(self, request):
-        pass # this line can be deleted 
+        user = request.user
+        balance = getBalance(user)
+        context = {
+            'username' : user.username,
+            'balance' : balance
+        }
+        return render(request, self.template_name, context)
         '''
         This method should return the page given in template_name with a context.
 
@@ -128,7 +138,38 @@ class BalanceOperationsView(LoginRequiredMixin, View):
         '''
 
     def post(self, request):
-        pass # this line can be deleted 
+        # # STEP1: get operation and amount from HTML form- operations.html
+        operation = request.POST.get('operation') #'operation' comes from HTML form-operations.html
+        amount = float(request.POST.get('amount'))
+
+        # # STEP2: Validate operation and amount
+        if operation not in ['deposit', 'withdraw']:
+            return HttpResponse('Invalid operation')
+        
+        if amount <= 0:
+            return HttpResponse('Invalid amount')
+        
+        user = request.user
+
+        # ## STEP3: Determine transaction type and adjust balance
+
+        if operation == 'deposit':
+            History.objects.create(status = 'success', amount = amount, type = "deposit", user = user)
+        elif operation == 'withdraw':
+            current_balance = getBalance(user)
+            if amount > current_balance:
+                History.objects.create(status = 'failure', amount = amount, type = "withdraw", user = user)
+                return HttpResponse('Insufficient balance for withdrawal')
+            else:
+                History.objects.create(status = 'success', amount = amount, type = "withdraw", user = user)
+        
+        # ## STEP4: Update balance in the context and render template
+        balance = getBalance(user)
+        context = {
+            'username' : user.username,
+            'balance' : balance
+        }
+        return render(request, self.template_name, context)
         '''
         This method should process a balance transaction.
         For this purpose it is necessary to add an entry to the History model. 
@@ -144,7 +185,7 @@ class BalanceOperationsView(LoginRequiredMixin, View):
         The balance key contains the result of the getBalance function (after account update)
         username contains the username of the user.
         '''
-
+# #-----HISTORY ----
 class ViewTransactionHistoryView(LoginRequiredMixin, ListView):
     model = History
     template_name = 'app/history.html'
@@ -167,6 +208,7 @@ class ViewTransactionHistoryView(LoginRequiredMixin, ListView):
         '''
         return context
 
+# #-----CURRENCY EXCHANGE ----
 class CurrencyExchangeView(LoginRequiredMixin, View):
     template_name = 'app/currency_exchange.html'
     empty_context = {'currency_choices': [], 'amount': None, 'currency': None, 'exchanged_amount': None}
