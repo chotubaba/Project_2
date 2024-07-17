@@ -21,7 +21,7 @@ def logout_view(request):
 # #----OPERATIONS ------
 def getBalance(user):
    deposits = History.objects.filter(user = user, 
-                                     type = 'deposit').aggregate(total_amount = Sum('amount'))['total_amount'] or 0
+                                     type = History.DEPOSIT).aggregate(total_amount = Sum('amount'))['total_amount'] or 0
    withdrawals = History.objects.filter(user = user, 
                                         type = 'withdraw').aggregate(total_amount = Sum('amount'))['total_amount'] or 0
    balance = deposits - withdrawals
