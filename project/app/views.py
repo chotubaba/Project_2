@@ -67,19 +67,16 @@ class CreateUserView(CreateView):
         '''
 
 class CustomLoginView(LoginView):
-    template_name = 'app/login.html'
+    template_name= 'app/login.html'
     success_url = reverse_lazy('main_menu')
-    '''
-    Modify this class. 
-    specify the login.html file as the template
-    if authentication is positive, add redirect to main_menu page
-    '''
 
     def get_success_url(self):
         return self.success_url
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['username'] = self.request.user.username
         '''
         If the user is authenticated, then add the 'username' key with the value of username to the context.
         '''
