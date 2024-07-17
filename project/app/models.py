@@ -10,10 +10,10 @@ class History(models.Model):
         (FAILURE, 'Failure') ]
 
     DEPOSIT = 'deposit'
-    DEBIT = 'debit'
+    DEBIT = 'withdraw'
     TYPE_CHOICES = [
         (DEPOSIT, 'Deposit'), 
-        (DEBIT, 'Debit') ]
+        (DEBIT, 'Withdraw') ]
 
     status = models.CharField(
         max_length=10,
