@@ -2,7 +2,43 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class History(models.Model):
-    pass
+
+    SUCCESS = "success"
+    FAILURE = "failure"
+    STATUS_CHOICES = [
+        (SUCCESS, 'Success'),
+        (FAILURE, 'Failure') ]
+
+    deposit = 'deposit'
+    debit = 'debit'
+    TYPE_CHOICES = [
+        (deposit, 'deposit'), 
+        (debit, 'debit') ]
+
+    status = models.CharField(
+        max_length=10,
+        choices = STATUS_CHOICES)
+    
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default = 0.00)
+    
+    type = models.CharField(
+        max_length=10,
+        choices =  TYPE_CHOICES)
+    
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name = "histories")
+    
+    datetime = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.get_type_display()} - {self.amount} - {self.get_status_display()}"
+    
+
     '''
     Create a History model with the following set of fields
 
