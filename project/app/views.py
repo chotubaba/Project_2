@@ -38,6 +38,10 @@ def getCurrencyParams():
 
 
 class CreateUserView(CreateView):
+    model = User 
+    form_class = CreateUserForm
+    template_name = 'app/create_account.html'
+    success_url = reverse_lazy('login')
     '''
     Finalize this class. It should create a new user.
     The model should be the User model
@@ -48,12 +52,16 @@ class CreateUserView(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['username'] = self.request.user.username
+        return context
         '''
         If the user is authenticated, then add the 'username' key with the value of username to the context.
         '''
-        return context
 
 class CustomLoginView(LoginView):
+    template_name = 'app/login.html'
+    success_url = reverse_lazy('main_menu')
     '''
     Modify this class. 
     specify the login.html file as the template
