@@ -6,6 +6,8 @@ from django.views.generic import CreateView, TemplateView, View, ListView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from .models import History
+from django.db.models import Sum
+
 from .forms import CreateUserForm
 import requests
 
@@ -14,12 +16,18 @@ def logout_view(request):
     return redirect('login') 
 
 def getBalance(user):
-    pass # this line can be deleted 
-    '''
+   deposits = History.objects.filter(user = user, 
+                                     type = 'deposit').aggregate(total_amount = Sum('amount'))['total_amount'] or 0
+   withdrawals = History.objects.filter(user = user, 
+                                        type = 'debit').aggregate(total_amount = Sum('amount'))['total_amount'] or 0
+   balance = deposits - withdrawals
+   return float(balance) 
+'''
     Write a function that finds the user's balance and returns it with the float data type. 
     To calculate the balance, calculate the sum of all user's deposits and the sum of all withdrawals.
     Then subtract the withdrawal amount from the deposit amount and return the result.
     '''
+
 def getCurrencyParams():
     pass # this line can be deleted 
     '''
