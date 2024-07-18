@@ -127,24 +127,20 @@ class BalanceOperationsView(LoginRequiredMixin, View):
         user = request.user
         balance = getBalance(user)
         context = {
-            'username' : user.username,
-            'balance' : balance
+            'username': user.username,
+            'balance': balance
         }
         return render(request, self.template_name, context)
         '''
-        This method should return the page given in template_name with a context.
-
-        Context is a dictionary with balance and username keys.
-        The balance key contains the result of the getBalance function
-        username contains the username of the user.
+        Generate a context variable with all values from empty_context and the converted values of currency_choices and username
+        currency_choices contains the value of the currency_choices variable
+        username contains the name of the current user
         '''
 
     def post(self, request):
-        # # STEP1: get operation and amount from HTML form- operations.html
-        operation = request.POST.get('operation') #'operation' comes from HTML form-operations.html
+        operation = request.POST.get('operation')  # 'operation' comes from HTML form - operations.html
         amount = float(request.POST.get('amount'))
 
-        # # STEP2: Validate operation and amount
         if operation not in ['deposit', 'withdraw']:
             return HttpResponse('Invalid operation')
         
@@ -152,27 +148,27 @@ class BalanceOperationsView(LoginRequiredMixin, View):
             return HttpResponse('Invalid amount')
         
         user = request.user
-
-        # ## STEP3: Determine transaction type and adjust balance
+        current_balance = getBalance(user)
 
         if operation == 'deposit':
-            History.objects.create(status = 'success', amount = amount, type = "deposit", user = user)
+            balance = current_balance + amount
+            History.objects.create(status='success', amount=amount, type='deposit', user=user)
+
         elif operation == 'withdraw':
-            current_balance = getBalance(user)
             if amount > current_balance:
-                History.objects.create(status = 'failure', amount = amount, type = "withdraw", user = user)
+                History.objects.create(status='failure', amount=amount, type='withdraw', user=user)
                 return HttpResponse('Insufficient balance for withdrawal')
             else:
-                History.objects.create(status = 'success', amount = amount, type = "withdraw", user = user)
-        
-        # ## STEP4: Update balance in the context and render template
+                balance = current_balance - amount
+                History.objects.create(status='success', amount=amount, type='withdraw', user=user)
+
         balance = getBalance(user)
         context = {
-            'username' : user.username,
-            'balance' : balance
+            'username': user.username,
+            'balance': balance
         }
         return render(request, self.template_name, context)
-        '''
+    '''
         This method should process a balance transaction.
         For this purpose it is necessary to add an entry to the History model. 
         

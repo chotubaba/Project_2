@@ -16,7 +16,7 @@
         <h1>Balance Operations</h1>
         <div>
             {% if balance != 0 %}
-                <p>Your current balance: $100</p> <!--{{ balance }} -->
+                <p>Your current balance: ${{ balance }}</p> <!--{{ balance }} -->
             {% else %}
                 <p>You have a zero balance</p>
             {% endif %}
