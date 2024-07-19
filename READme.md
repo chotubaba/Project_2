@@ -89,15 +89,16 @@ For Windows:
     ```
 
 **Install Dependencies**
-
     ```bash
     pip install -r requirements.txt
     ```
 
 4. **Apply Database Migrations**
-  ```bash
+   
+    ```bash
     pip install -r requirements.txt
     ```
+
     ```bash
     python manage.py makemigrations
     python manage.py migrate
@@ -130,17 +131,16 @@ For Windows:
         - Connect and execute queries against your SQLite database as needed.
 
 6. **Testing**
-**Running All Tests : **
+   
+-Running All Tests :
     To run all tests in the project, execute:
-
     ```bash
     python3 manage.py test
     ```
 
-**Testing Specific Components**
+-Testing Specific Components
     To test individual models, methods, classes, or templates, specify the path to the test module. 
     For example, to test the ViewTransactionHistoryView:
-
     ```bash
     python3 manage.py test app.tests.test_TransactionHistoryView
     ```
@@ -159,61 +159,61 @@ For Windows:
 
 
     Step 1: Add __pycache__ to .gitignore
-    ```bash
-    echo "__pycache__/" >> .gitignore
-    ```
+        ```bash
+        echo "__pycache__/" >> .gitignore
+        ```
 
     Step 2: Remove __pycache__ directories from Git tracking
-    ```bash
-    find . -name "__pycache__" -type d -exec git rm -r --cached {} +
-    ```
+      ```bash
+      find . -name "__pycache__" -type d -exec git rm -r --cached {} +
+      ```
 
     Step 3: Commit the changes
-
-    ```bash
-    git add .gitignore
-    git commit -m "Add __pycache__ to .gitignore and remove from tracking"
-    ```
+      ```bash
+      git add .gitignore
+      git commit -m "Add __pycache__ to .gitignore and remove from tracking"
+      ```
 
     Step 4: Push the changes
-    ```bash
-    git push origin branch_name
-    ```
+      ```bash
+      git push origin branch_name
+      ```
 
 8. **Security:**
-Review and implement Django's built-in security features such as CSRF protection (csrf_token), authentication (LoginRequiredMixin), and validation checks (e.g., amount <= 0, invalid operations).
+  Review and implement Django's built-in security features such as CSRF protection (csrf_token), authentication (LoginRequiredMixin), and validation checks (e.g., amount <= 0,   invalid operations).
+
 
 9. **Contributing**
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+  Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+  
+  Please make sure to update tests as appropriate.
+  
+    1. Fork the Repository: Click on the "Fork" button at the top right of this repository page.
 
-Please make sure to update tests as appropriate.
-
-Fork the Repository: Click on the "Fork" button at the top right of this repository page.
-
-1. Create a New Branch:*
-
-'''bash
-git checkout -b feature-branch
-'''
-
-2. Commit Your Changes:
-
-'''bash
-git commit -am 'Add new feature'
-'''
-3. Push to the Branch:
-
-'''bash
-git push origin feature-branch
-'''
+    2. Create a New Branch:*
+        ```bash
+        git checkout -b feature-branch
+        ```
+    3. Commit Your Changes:
+    
+        ```bash
+        git commit -am 'Add new feature'
+        ```
+    4. Push to the Branch:
+    
+        '''bash
+        git push origin feature-branch
+        '''
 
 4. Create a Pull Request: Go to the repository on GitHub and click **"New Pull Request".**
 
 Please refer to our Code of Conduct for more details.
 
+```markdown
 10.**License**
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
 This `README.md` file includes all the necessary steps for installation, usage, testing, and contributing, with clear sections and formatting for easy navigation.
+```
