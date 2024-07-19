@@ -65,6 +65,7 @@ class CreateUserView(CreateView):
     form_class = CreateUserForm
     template_name = 'app/create_account.html'
     success_url = reverse_lazy('login')
+    
     '''
     Finalize this class. It should create a new user.
     The model should be the User model
@@ -81,7 +82,14 @@ class CreateUserView(CreateView):
         '''
         If the user is authenticated, then add the 'username' key with the value of username to the context.
         '''
+    # # FORM HANDLING TO TAKE CARE OF CUSTOM SAVE METHOD IN FORMS.PY.
+    # Default behavior of the CreateView will be used to handle form submission and saving the new user.
+    def form_valid(self, form):
+        user = form.save()
+        print("Form is valid. Redirecting to:", self.success_url)
+        return super().form_valid(form)
 
+# #  ====================== ++++++++++++++++++++++ =========================== # 3
 class CustomLoginView(LoginView):
     template_name= 'app/login.html'
     success_url = reverse_lazy('main_menu')
