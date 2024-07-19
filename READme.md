@@ -1,5 +1,5 @@
 # Project 2 Django Final
-
+```markdown
 A Django web application for user management and financial operations, including account creation, login, balance operations, transaction history, and currency exchange.
 
 ## Table of Contents
@@ -19,33 +19,38 @@ A Django web application for user management and financial operations, including
 
 **Logout Function (`logout_view`)**
 
-Handles user logout and redirects to the login page.
+  Handles user logout and redirects to the login page.
 
 **Operations Functions (`getBalance` and transaction operations in `BalanceOperationsView`)**
 
-- **`getBalance(user)`**: Calculates the user's balance based on deposit and withdrawal history.
-- **`BalanceOperationsView Class`**: Handles both GET and POST requests for balance operations.
+  - **`getBalance(user)`**: Calculates the user's balance based on deposit and withdrawal history.
+  - **`BalanceOperationsView Class`**: Handles both GET and POST requests for balance operations.
   - **`get(self, request)`**: Retrieves the user's balance and renders the `operations.html` template.
   - **`post(self, request)`**: Processes deposit and withdrawal operations based on form input, updates history, and renders the updated balance in the template.
 
 **Create User (`CreateUserView`) and Login (`CustomLoginView`)**
 
-- **`CreateUserView`**: Utilizes `CreateView` to handle user registration using the `User` model and `CreateUserForm`.
-- **`CustomLoginView`**: Extends `LoginView` to customize login behavior and context data.
+  - **`CreateUserView`**: Utilizes `CreateView` to handle user registration using the `User` model and `CreateUserForm`.
+  - **`CustomLoginView`**: Extends `LoginView` to customize login behavior and context data.
+
 
 **Main Menu (`MainMenuView`)**
 
-Displays the main menu template (`main_menu.html`) with the user's username if authenticated.
+  Displays the main menu template (`main_menu.html`) with the user's username if authenticated.
+
 
 **Transaction History (`ViewTransactionHistoryView`)**
 
-Displays the transaction history for the logged-in user, sorted by date.
+  Displays the transaction history for the logged-in user, sorted by date.
+
 
 **Currency Exchange (`CurrencyExchangeView`)**
 
 Provides functionality to convert an amount from one currency to another using an external API:
-- **API Endpoint**: [Currency Exchange API](https://fake-api.apps.berlintech.ai/api/currency_exchange)
-- Handles GET and POST requests, validates form data, retrieves currency rates, and computes the exchanged amount.
+  - **API Endpoint**: [Currency Exchange API](https://fake-api.apps.berlintech.ai/api/currency_exchange)
+  - Handles GET and POST requests, validates form data, retrieves currency rates, and computes the exchanged amount.
+
+  ```
 
 ## INSTALLATION
 
@@ -90,8 +95,10 @@ For Windows:
     ```
 
 4. **Apply Database Migrations**
-
-```bash
+  ```bash
+    pip install -r requirements.txt
+    ```
+    ```bash
     python manage.py makemigrations
     python manage.py migrate
     ```
