@@ -129,15 +129,15 @@ class BalanceOperationsView(LoginRequiredMixin, View):
         user = request.user
         balance = getBalance(user)
         context = {
-            'username': user.username, # username contains the name of the current user
+            'username': user.username,
             'balance': balance
         }
-       # print(f"GET_Testing:: username: {'username'} get_balance :{balance}")
+       # print(f"GET: username: {'username'} get_balance :{balance}")
         return render(request, self.template_name, context)
-    '''
-        Context is a dictionary with balance and username keys.
-        The balance key contains the result of the getBalance function (after account update)
-        username contains the username of the user.
+        '''
+        Generate a context variable with all values from empty_context and the converted values of currency_choices and username
+        currency_choices contains the value of the currency_choices variable
+        username contains the name of the current user
         '''
 
     def post(self, request):
@@ -155,23 +155,23 @@ class BalanceOperationsView(LoginRequiredMixin, View):
 
         if operation == 'deposit':
             History.objects.create(status='success', amount=amount, type='deposit', user=user)
-           # print(f"Balance after deposit success_Testing:: {getBalance(user)}") # For Testing
+           # print(f"Balance after deposit success: {getBalance(user)}")
 
         elif operation == 'withdraw':
             if amount > current_balance:
                 History.objects.create(status='failure', amount=amount, type='withdraw', user=user)
-                #print(f"Balance after withdraw failure_Testing:: {getBalance(user)}") # For Testing
+                # print(f"Balance after withdraw failure: {getBalance(user)}")
                 return HttpResponse('Insufficient balance for withdrawal')
             else:
                 History.objects.create(status='success', amount=amount, type='withdraw', user=user)
-                #print(f"Balance after withdraw success_Testing:: {getBalance(user)}")
+                # print(f"Balance after withdraw success: {getBalance(user)}")
 
         balance = getBalance(user)
         context = {
             'username': user.username,
             'balance': balance
         }
-        #print(f"POST_Testing: original_balance : {current_balance} operation :{operation} amount:{amount} balance2 :{balance}")
+        # print(f"POST: original_balance : {current_balance} operation :{operation} amount:{amount} balance2 :{balance}")
         return render(request, self.template_name, context)
     '''
         This method should process a balance transaction.
@@ -197,8 +197,10 @@ class ViewTransactionHistoryView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         # Filter the transaction history by the current logged-in user
-        # return the entire transaction history of the current user
         return History.objects.filter(user = self.request.user)
+        '''
+        This method should return the entire transaction history of the current user
+        '''
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
